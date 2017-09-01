@@ -19,16 +19,38 @@ defmodule SymiansServerWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(params, socket) do
-    # TODO:
-    # create a supervisor/registry as a lookup for users
-    # that this function uses to look for / add new users/connections to
-    # user process spawn for each user - manages user connection
-    IO.puts "User connected"
-    # check to see if we already have this user
-    # if we dont, create one and give him a token.
-    # if we do, verify his token? 
-    {:ok, socket}
+  def connect(_params, socket) do
+    case %{assigns: _assigns} = socket do
+      {:ok, _token} ->
+        IO.puts "Existing user connected"
+        {:ok, socket}
+      _ ->
+        IO.puts "New User!"
+        token = Phoenix.Token.sign(socket, "veruka salty dawg 4 lyfe", UUID.uuid1())
+        changeset = SymiansServer.User.changeset(%SymiansServer.User{}, %{token: token})
+
+        case SymiansServer.Repo.insert(changeset) do
+          {:ok, user} ->
+            IO.puts "reading user: #{inspect user.id}"
+
+            socket = socket
+                |> assign(:token, token)
+                |> assign(:id, user.id)
+
+            {:ok, socket}
+
+          {:error, changeset} ->
+            IO.puts "Could not add user -> #{inspect changeset}"
+            {:ok, socket}
+        end
+    end
+  end
+
+  def handle_info({:user_connected, user}, socket) do
+    IO.puts "UYIUDSFIOKLSUDF"
+    IO.inspect user
+    IO.puts "UYIUDSFIOKLSUDF"
+    {:noreply, socket}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

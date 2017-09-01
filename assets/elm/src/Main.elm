@@ -3,7 +3,11 @@ import Html exposing (Html, div)
 import Platform.Cmd
 import Json.Encode as JE
 import Json.Decode as JD exposing (field)
-import Components.Chat as Chat
+
+import Chat.Model as ChatModel
+import Chat.View as ChatView
+import Chat.Update as Chat
+import Chat.Subscriptions as ChatSubs
 
 
 -- MAIN
@@ -23,15 +27,15 @@ main =
 
 
 type Msg
-    = ChatMsg Chat.Msg
+    = ChatMsg ChatModel.Msg
     | NoOp
 
 type alias Model =
-    { chat : Chat.Model }
+    { chat : ChatModel.Model }
 
 initialModel : Model
 initialModel =
-    { chat = Chat.initModel }
+    { chat = ChatModel.initModel }
 
 init : ( Model, Cmd Msg )
 init =
@@ -44,7 +48,7 @@ init =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-      [ Sub.map ChatMsg (Chat.subscriptions model.chat) ]
+      [ Sub.map ChatMsg (ChatSubs.subscriptions model.chat) ]
 
 
 type alias ChatMessage =
@@ -89,5 +93,5 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ Html.map ChatMsg (Chat.view model.chat)
+        [ Html.map ChatMsg (ChatView.view model.chat)
         ]

@@ -11,6 +11,7 @@ defmodule SymiansServerWeb.RoomChannel do
   def join("rooms:lobby", message, socket) do
     Process.flag(:trap_exit, true)
     # :timer.send_interval(5000, :ping)
+    IO.puts "In join yo! -> #{inspect socket.assigns}"
     send(self(), {:after_join, message})
 
     {:ok, socket}
@@ -21,10 +22,12 @@ defmodule SymiansServerWeb.RoomChannel do
   end
 
   def handle_info({:after_join, msg}, socket) do
-    broadcast! socket, "user:entered", %{user: msg["user"]}
-    push socket, "join", %{status: "connected"}
+    IO.puts "Recieved :after_join msg of -> #{inspect msg}"
+    broadcast! socket, "user:entered", %{user: socket.assigns.id}
+    push socket, "join", %{status: "connected", id: socket.assigns.id, token: socket.assigns.token}
     {:noreply, socket}
   end
+
   def handle_info(:ping, socket) do
     push socket, "new:msg", %{user: "SYSTEM", body: "ping"}
     {:noreply, socket}
