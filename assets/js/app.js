@@ -22,4 +22,4 @@ import "phoenix_html"
 
 // attach the elm application
 let Elm = require( './elm.js' );
-Elm.Main.embed(document.getElementById( 'main' ));
+Elm.Main.embed(document.getElementById( 'app' ));

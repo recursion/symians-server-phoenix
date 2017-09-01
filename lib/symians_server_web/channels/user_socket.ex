@@ -2,7 +2,7 @@ defmodule SymiansServerWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", SymiansServerWeb.RoomChannel
+  channel "rooms:*", SymiansServerWeb.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -19,7 +19,15 @@ defmodule SymiansServerWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
+  def connect(params, socket) do
+    # TODO:
+    # create a supervisor/registry as a lookup for users
+    # that this function uses to look for / add new users/connections to
+    # user process spawn for each user - manages user connection
+    IO.puts "User connected"
+    # check to see if we already have this user
+    # if we dont, create one and give him a token.
+    # if we do, verify his token? 
     {:ok, socket}
   end
 
