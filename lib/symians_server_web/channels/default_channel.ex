@@ -1,4 +1,4 @@
-defmodule SymiansServerWeb.RoomChannel do
+defmodule SymiansServerWeb.DefaultChannel do
   require Logger
   use Phoenix.Channel
   @doc """
@@ -11,8 +11,16 @@ defmodule SymiansServerWeb.RoomChannel do
   def join("rooms:lobby", message, socket) do
     Process.flag(:trap_exit, true)
     # :timer.send_interval(5000, :ping)
-    IO.puts "In join yo! -> #{inspect socket.assigns}"
     send(self(), {:after_join, message})
+
+    {:ok, socket}
+  end
+
+  def join("rooms:secret", message, socket) do
+    Process.flag(:trap_exit, true)
+    # :timer.send_interval(5000, :ping)
+    IO.puts "User joined Secret room! #{inspect message}"
+    # send(self(), {:after_join, message})
 
     {:ok, socket}
   end
@@ -23,8 +31,9 @@ defmodule SymiansServerWeb.RoomChannel do
 
   def handle_info({:after_join, msg}, socket) do
     IO.puts "Recieved :after_join msg of -> #{inspect msg}"
-    broadcast! socket, "user:entered", %{user: socket.assigns.id}
-    push socket, "join", %{status: "connected", id: socket.assigns.id, token: socket.assigns.token}
+    %{id: id, token: token} = socket.assigns
+    broadcast! socket, "user:entered", %{id: id}
+    push socket, "join", %{status: "connected", id: id, token: token}
     {:noreply, socket}
   end
 

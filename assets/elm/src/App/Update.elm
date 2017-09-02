@@ -1,7 +1,7 @@
 module App.Update exposing (update)
 
 import App.Model exposing (..)
-import App.Messages.Handlers as Msgs
+import Messages.Handlers as Msgs
 import App.Channels as Channel
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -22,11 +22,11 @@ update msg model =
     ReceiveChatMessage raw ->
       Msgs.chat model raw
 
-    JoinChannel ->
-      Channel.join model
+    JoinChannel channel ->
+      Channel.join model channel
 
-    LeaveChannel ->
-      Channel.leave model
+    LeaveChannel channel ->
+      Channel.leave model channel
 
     JoinedChannel channelName ->
       Channel.joined model channelName

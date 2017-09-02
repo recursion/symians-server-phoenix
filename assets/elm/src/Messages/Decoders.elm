@@ -1,7 +1,7 @@
-module App.Messages.Decoders exposing (..)
+module Messages.Decoders exposing (..)
 
 import Json.Decode as JD exposing (field)
-import App.Messages.Messages as Msgs
+import Messages.Models as Msgs
 
 joinMessageDecoder : JD.Decoder Msgs.Join
 joinMessageDecoder =

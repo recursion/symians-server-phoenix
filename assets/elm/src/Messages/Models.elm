@@ -1,4 +1,4 @@
-module App.Messages.Messages exposing (..)
+module Messages.Models exposing (..)
 
 type alias Chat =
     { user : String

@@ -2,7 +2,7 @@ defmodule SymiansServerWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "rooms:*", SymiansServerWeb.RoomChannel
+  channel "rooms:*", SymiansServerWeb.DefaultChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

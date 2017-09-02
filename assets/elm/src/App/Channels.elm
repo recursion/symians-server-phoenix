@@ -8,24 +8,24 @@ userParams : JE.Value
 userParams =
   JE.object [ ( "user_id", JE.string "123" ) ]
 
-initialize =
+init channel =
   -- We will need a port to communicate with location storage
   -- for the user tokens.
-  Phoenix.Channel.init "rooms:lobby"
+  Phoenix.Channel.init channel
     |> Phoenix.Channel.withPayload userParams
-    |> Phoenix.Channel.onJoin (always (JoinedChannel "rooms:lobby"))
-    |> Phoenix.Channel.onClose (always (LeftChannel "rooms:lobby"))
+    |> Phoenix.Channel.onJoin (always (JoinedChannel channel))
+    |> Phoenix.Channel.onClose (always (LeftChannel channel))
 
-join model =
+join model channel =
   let
-    ( phxSocket, phxCmd ) = Phoenix.Socket.join initialize model.phxSocket
+    ( phxSocket, phxCmd ) = Phoenix.Socket.join (init channel) model.phxSocket
   in
     ( { model | phxSocket = phxSocket }, Cmd.map PhoenixMsg phxCmd)
 
-leave model =
+leave model channel =
   let
     ( phxSocket, phxCmd ) =
-        Phoenix.Socket.leave "rooms:lobby" model.phxSocket
+        Phoenix.Socket.leave channel model.phxSocket
   in
     ( { model | phxSocket = phxSocket }, Cmd.map PhoenixMsg phxCmd)
 

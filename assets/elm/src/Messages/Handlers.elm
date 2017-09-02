@@ -1,8 +1,8 @@
-module App.Messages.Handlers exposing (..)
+module Messages.Handlers exposing (..)
 
 import Json.Encode as JE
 import App.Model exposing (Msg(..), Model)
-import App.Messages.Decoders exposing (decodeJoinMessage, decodeChatMessage)
+import Messages.Decoders exposing (decodeJoinMessage, decodeChatMessage)
 
 import Phoenix.Socket
 import Phoenix.Channel

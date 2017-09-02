@@ -27,20 +27,15 @@ subscriptions model =
     Sub.batch [Phoenix.Socket.listen model.phxSocket PhoenixMsg]
 
 
-initPhxSocket : Phoenix.Socket.Socket Msg
-initPhxSocket =
+initSocket : Phoenix.Socket.Socket Msg
+initSocket =
     Phoenix.Socket.init socketServer
         |> Phoenix.Socket.withDebug
         |> Phoenix.Socket.on "new:msg" "rooms:lobby" ReceiveChatMessage
         |> Phoenix.Socket.on "join" "rooms:lobby" ReceiveJoinMessage
 
 
-initModel : Model
-initModel =
-    Model "" [] initPhxSocket (User Nothing Nothing "")
-
-
 init : ( Model, Cmd Msg )
 init =
-    ( initModel, Cmd.none )
+    ( Model "" [] initSocket (User Nothing Nothing ""), Cmd.none )
 

@@ -61,8 +61,10 @@ channels model =
   div [ class "channels" ]
       [ h3 [] [ text "Channels:" ]
       , div []
-        [ button [ onClick JoinChannel ] [ text "Join channel" ]
-        , button [ onClick LeaveChannel ] [ text "Leave channel" ]
+        [ button [ onClick (JoinChannel "rooms:lobby") ] [ text "Join channel Lobby" ]
+        , button [ onClick (LeaveChannel "rooms:lobby") ] [ text "Leave channel Lobby" ]
+        , button [ onClick (JoinChannel "rooms:secret") ] [ text "Join channel Secret" ]
+        , button [ onClick (LeaveChannel "rooms:secret") ] [ text "Leave channel Secret" ]
         ]
       , channelsTable (Dict.values model.phxSocket.channels)
       , br [] []

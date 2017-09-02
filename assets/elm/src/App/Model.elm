@@ -11,8 +11,8 @@ type Msg
     | PhoenixMsg (Phoenix.Socket.Msg Msg)
     | ReceiveChatMessage JE.Value
     | ReceiveJoinMessage JE.Value
-    | JoinChannel
-    | LeaveChannel
+    | JoinChannel String
+    | LeaveChannel String
     | JoinedChannel String
     | LeftChannel String
     | NoOp
