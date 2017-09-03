@@ -9991,16 +9991,6 @@ var _user$project$App_Channels$leave = F2(
 			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App_Model$PhoenixMsg, phxCmd)
 		};
 	});
-var _user$project$App_Channels$userParams = _elm_lang$core$Json_Encode$object(
-	{
-		ctor: '::',
-		_0: {
-			ctor: '_Tuple2',
-			_0: 'user_id',
-			_1: _elm_lang$core$Json_Encode$string('123')
-		},
-		_1: {ctor: '[]'}
-	});
 var _user$project$App_Channels$init = function (channel) {
 	return A2(
 		_fbonetti$elm_phoenix_socket$Phoenix_Channel$onClose,
@@ -10010,10 +10000,7 @@ var _user$project$App_Channels$init = function (channel) {
 			_fbonetti$elm_phoenix_socket$Phoenix_Channel$onJoin,
 			_elm_lang$core$Basics$always(
 				_user$project$App_Model$JoinedChannel(channel)),
-			A2(
-				_fbonetti$elm_phoenix_socket$Phoenix_Channel$withPayload,
-				_user$project$App_Channels$userParams,
-				_fbonetti$elm_phoenix_socket$Phoenix_Channel$init(channel))));
+			_fbonetti$elm_phoenix_socket$Phoenix_Channel$init(channel)));
 };
 var _user$project$App_Channels$join = F2(
 	function (model, channel) {
@@ -10023,13 +10010,24 @@ var _user$project$App_Channels$join = F2(
 			model.phxSocket);
 		var phxSocket = _p1._0;
 		var phxCmd = _p1._1;
+		var socket = A4(_fbonetti$elm_phoenix_socket$Phoenix_Socket$on, 'new:msg', channel, _user$project$App_Model$ReceiveChatMessage, phxSocket);
 		return {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.update(
 				model,
-				{phxSocket: phxSocket}),
+				{phxSocket: socket}),
 			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App_Model$PhoenixMsg, phxCmd)
 		};
+	});
+var _user$project$App_Channels$userParams = _elm_lang$core$Json_Encode$object(
+	{
+		ctor: '::',
+		_0: {
+			ctor: '_Tuple2',
+			_0: 'user_id',
+			_1: _elm_lang$core$Json_Encode$string('123')
+		},
+		_1: {ctor: '[]'}
 	});
 
 var _user$project$Messages_Models$Chat = F2(
@@ -10105,13 +10103,14 @@ var _user$project$Messages_Handlers$join = F2(
 		}
 	});
 var _user$project$Messages_Handlers$send = function (model) {
+	var token = A2(_elm_lang$core$Maybe$withDefault, '', model.user.token);
 	var payload = _elm_lang$core$Json_Encode$object(
 		{
 			ctor: '::',
 			_0: {
 				ctor: '_Tuple2',
-				_0: 'user',
-				_1: _elm_lang$core$Json_Encode$string('user')
+				_0: 'token',
+				_1: _elm_lang$core$Json_Encode$string(token)
 			},
 			_1: {
 				ctor: '::',
@@ -10281,7 +10280,7 @@ var _user$project$App_View$channels = function (model) {
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text('Join channel Lobby'),
+								_0: _elm_lang$html$Html$text('Join Lobby'),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -10296,7 +10295,7 @@ var _user$project$App_View$channels = function (model) {
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('Leave channel Lobby'),
+									_0: _elm_lang$html$Html$text('Leave Lobby'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
@@ -10311,7 +10310,7 @@ var _user$project$App_View$channels = function (model) {
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('Join channel Secret'),
+										_0: _elm_lang$html$Html$text('Join Secret'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -10326,7 +10325,7 @@ var _user$project$App_View$channels = function (model) {
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Leave channel Secret'),
+											_0: _elm_lang$html$Html$text('Leave Secret'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {ctor: '[]'}
@@ -10503,13 +10502,8 @@ var _user$project$Main$initSocket = A4(
 	'join',
 	'rooms:lobby',
 	_user$project$App_Model$ReceiveJoinMessage,
-	A4(
-		_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-		'new:msg',
-		'rooms:lobby',
-		_user$project$App_Model$ReceiveChatMessage,
-		_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-			_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(_user$project$Main$socketServer))));
+	_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
+		_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(_user$project$Main$socketServer)));
 var _user$project$Main$init = {
 	ctor: '_Tuple2',
 	_0: A4(

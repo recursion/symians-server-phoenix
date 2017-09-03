@@ -9,10 +9,10 @@ defmodule SymiansServerWeb.DefaultChannel do
   for the requested topic
   """
   def join("rooms:lobby", message, socket) do
+    IO.puts "User joined rooms:lobby"
     Process.flag(:trap_exit, true)
     # :timer.send_interval(5000, :ping)
     send(self(), {:after_join, message})
-
     {:ok, socket}
   end
 
@@ -31,9 +31,13 @@ defmodule SymiansServerWeb.DefaultChannel do
 
   def handle_info({:after_join, msg}, socket) do
     IO.puts "Recieved :after_join msg of -> #{inspect msg}"
-    %{id: id, token: token} = socket.assigns
-    broadcast! socket, "user:entered", %{id: id}
-    push socket, "join", %{status: "connected", id: id, token: token}
+    case socket.assigns do
+      %{id: id, token: token} ->
+        broadcast! socket, "user:entered", %{id: id}
+        push socket, "join", %{status: "connected", id: id, token: token}
+      %{token: token} ->
+        push socket, "join", %{status: "connected", token: token}
+    end
     {:noreply, socket}
   end
 
@@ -48,7 +52,11 @@ defmodule SymiansServerWeb.DefaultChannel do
   end
 
   def handle_in("new:msg", msg, socket) do
-    broadcast! socket, "new:msg", %{user: msg["user"], body: msg["body"]}
+    IO.puts "In handle_in `new:msg`"
+    # get the users name
+    # for now its anon
+    IO.inspect msg
+    broadcast! socket, "new:msg", %{user: "A wandering stranger", body: msg["body"]}
     {:reply, {:ok, %{msg: msg["body"]}}, assign(socket, :user, msg["user"])}
   end
 end

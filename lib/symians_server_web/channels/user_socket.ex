@@ -1,10 +1,10 @@
 defmodule SymiansServerWeb.UserSocket do
   use Phoenix.Socket
 
-  ## Channels
+  # Channels
   channel "rooms:*", SymiansServerWeb.DefaultChannel
 
-  ## Transports
+  # Transports
   transport :websocket, Phoenix.Transports.WebSocket
   # transport :longpoll, Phoenix.Transports.LongPoll
 
@@ -19,40 +19,36 @@ defmodule SymiansServerWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    case %{assigns: _assigns} = socket do
-      {:ok, _token} ->
+
+  # TODO: move this into a config file.. or something more secure...
+  @salt "veruka salty dawg 4 lyfe yo"
+
+  def connect(params, socket) do
+    case params do
+      %{token: _token} ->
         IO.puts "Existing user connected"
+        # validate token - and attach to socket if its good
         {:ok, socket}
       _ ->
-        IO.puts "New User!"
-        token = Phoenix.Token.sign(socket, "veruka salty dawg 4 lyfe", UUID.uuid1())
-        changeset = SymiansServer.User.changeset(%SymiansServer.User{}, %{token: token})
-
-        case SymiansServer.Repo.insert(changeset) do
-          {:ok, user} ->
-            IO.puts "reading user: #{inspect user.id}"
-
-            socket = socket
-                |> assign(:token, token)
-                |> assign(:id, user.id)
-
-            {:ok, socket}
-
-          {:error, changeset} ->
-            IO.puts "Could not add user -> #{inspect changeset}"
-            {:ok, socket}
-        end
+        IO.puts "New user connected"
+        {:ok, assign_token(socket)}
     end
   end
 
-  def handle_info({:user_connected, user}, socket) do
-    IO.puts "UYIUDSFIOKLSUDF"
-    IO.inspect user
-    IO.puts "UYIUDSFIOKLSUDF"
-    {:noreply, socket}
+  def assign_token(socket) do
+    socket
+    |> assign(:token, Phoenix.Token.sign(socket, @salt, UUID.uuid1()))
   end
 
+  def authenticate(socket, token) do
+    Phoenix.Token.verify(socket, @salt, token)
+  end
+
+  def create_user(token) do
+    %SymiansServer.User{}
+    |> SymiansServer.User.changeset(token)
+    |> SymiansServer.Repo.insert!
+  end
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "user_socket:#{socket.assigns.user_id}"
