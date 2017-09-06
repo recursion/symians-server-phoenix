@@ -48,7 +48,7 @@ defmodule SymiansServer.Mixfile do
       {:syms, in_umbrella: true},
       {:credo, "~>0.5", only: [:dev, :test]},
       {:dogma, "~> 0.1", only: [:dev]},
-      { :uuid, "~> 1.1" }
+      {:uuid, "~> 1.1"}
     ]
   end
 

@@ -6,6 +6,10 @@ defmodule SymiansServer.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
+    # create a default world and generate some locations in it
+    world = Syms.create_world("default")
+    Syms.World.generate(world, {25, 25, 25})
+
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository

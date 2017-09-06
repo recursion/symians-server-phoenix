@@ -2,7 +2,7 @@ defmodule SymiansServerWeb.UserSocket do
   use Phoenix.Socket
 
   # Channels
-  channel "rooms:*", SymiansServerWeb.DefaultChannel
+  channel "system:*", SymiansServerWeb.Channels.System
 
   # Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -31,6 +31,8 @@ defmodule SymiansServerWeb.UserSocket do
         {:ok, socket}
       _ ->
         IO.puts "New user connected"
+        # just create him a token for now
+        # we will do some further 'sign up' later if needed
         {:ok, assign_token(socket)}
     end
   end
@@ -38,6 +40,12 @@ defmodule SymiansServerWeb.UserSocket do
   def assign_token(socket) do
     socket
     |> assign(:token, Phoenix.Token.sign(socket, @salt, UUID.uuid1()))
+    |> assign(:user_name, get_random_anon_user())
+  end
+
+  def get_random_anon_user do
+    :random.seed(:erlang.now)
+    Enum.random(["A wandering stranger", "An unknown soldier", "Some passerbyer"])
   end
 
   def authenticate(socket, token) do
