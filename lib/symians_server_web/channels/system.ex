@@ -12,7 +12,8 @@ defmodule SymiansServerWeb.Channels.System do
     Process.flag(:trap_exit, true)
     # :timer.send_interval(5000, :ping)
     send(self(), {:send_auth_data, message})
-    :timer.send_interval(5000, :send_world_data)
+    send(self(), :send_world_data)
+    # :timer.send_interval(25000, :send_world_data)
     {:ok, socket}
   end
 
@@ -51,9 +52,12 @@ defmodule SymiansServerWeb.Channels.System do
     # we will likely want to change coordinates to maps in the :ets store
     Task.start(fn ->
       mappedLocations =
-        Enum.map(locations, fn {{l, w, h}, loc} ->
-          %{coordinates: %{x: l, y: w, z: h}, location: loc}
-        end)
+        locations
+          |> Enum.map(fn {{l, w, h}, loc} ->
+            # %{coordinates: %{x: l, y: w, z: h}, location: loc}
+            {Syms.World.Coordinates.to_string({l, w, h}), loc}
+          end)
+          |> Map.new
       broadcast! socket, "world", %{locations: mappedLocations, dimensions: %{length: l, width: w, height: h}}
     end)
     {:noreply, socket}
