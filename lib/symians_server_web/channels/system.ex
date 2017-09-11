@@ -37,10 +37,6 @@ defmodule SymiansServerWeb.Channels.System do
     {:noreply, socket}
   end
 
-  def ets_lookup(world_name, key) do
-    IO.inspect :ets.lookup(String.to_atom(world_name), key)
-  end
-
   def handle_info(:send_world_data, socket) do
     # IO.inspect :ets.lookup(String.to_atom("default"), "locations")
     # IO.inspect :ets.lookup(String.to_atom("default"), "dimensions")
@@ -48,24 +44,38 @@ defmodule SymiansServerWeb.Channels.System do
     [{_, locations}] = :ets.lookup(String.to_atom("default"), "locations")
     [{_, {l, w, h}}] = :ets.lookup(String.to_atom("default"), "dimensions")
 
-    # TODO: Since we are having to map over locations to produce encodable coordinates,
-    # we will likely want to change coordinates to maps in the :ets store
-    Task.start(fn ->
-      mappedLocations =
-        locations
-          |> Enum.map(fn {{l, w, h}, loc} ->
-            # %{coordinates: %{x: l, y: w, z: h}, location: loc}
-            {Syms.World.Coordinates.to_string({l, w, h}), loc}
-          end)
-          |> Map.new
-      broadcast! socket, "world", %{locations: mappedLocations, dimensions: %{length: l, width: w, height: h}}
-    end)
+    send_locations(locations, socket, {l, w, h})
+
     {:noreply, socket}
   end
 
   def handle_info(:ping, socket) do
     push socket, "new:msg", %{user: "SYSTEM", body: "ping"}
     {:noreply, socket}
+  end
+
+  def ets_lookup(world_name, key) do
+    IO.inspect :ets.lookup(String.to_atom(world_name), key)
+  end
+
+  def send_locations(locations, socket, {l, w, h}) do
+    Task.start(fn ->
+      mapped_locations =
+        locations
+        |> Stream.filter(fn {{_l, _w, h}, _loc} ->
+        # only show z level 0 for now
+        # in the future we will send out the z level the client is subscribed to
+        # as well as the level above and below
+        h == 1
+      end)
+      |> Enum.map(fn {{l, w, h}, loc} ->
+          # %{coordinates: %{x: l, y: w, z: h}, location: loc}
+          {Syms.World.Coordinates.to_string({l, w, h}), loc}
+        end)
+        |> Map.new
+      result = %{locations: mapped_locations, dimensions: %{length: l, width: w, height: h}}
+      broadcast! socket, "world", result
+    end)
   end
 
   def terminate(reason, _socket) do
