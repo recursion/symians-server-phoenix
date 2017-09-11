@@ -8,7 +8,7 @@ defmodule SymiansServer.Application do
 
     # create a default world and generate some locations in it
     world = Syms.create_world("default")
-    Syms.World.generate(world, {25, 25, 25})
+    Syms.World.generate(world, {30, 30, 30})
 
     # Define workers and child supervisors to be supervised
     children = [
