@@ -21,5 +21,5 @@ import "phoenix_html"
 // import socket from "./socket"
 
 // attach the elm application
-let Elm = require( './elm.js' );
-Elm.Main.embed(document.getElementById( 'app' ));
+let Elm = require( './main.js' );
+Elm.Main.fullscreen();
