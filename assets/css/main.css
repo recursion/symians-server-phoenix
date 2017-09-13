@@ -6630,74 +6630,42 @@ body {
 ::-webkit-scrollbar {
   display: none; }
 
-#navMenubd > div > div > button {
-  margin: 0 auto;
-  margin-left: 0.25em;
-  font-weight: bold;
-  font-size: 1.25em; }
-
-.logo {
-  line-height: 1em;
-  letter-spacing: 1em;
-  font-weight: bold;
-  font-size: 2em; }
-
-.nav-button {
-  margin-left: 0.8em; }
-
-#svg2 {
-  display: none; }
-
-.app {
-  width: 100%;
-  height: 100%; }
-
 .world {
   position: absolute;
   top: 0;
   bottom: 0;
-  border: 1px solid black;
+  left: 0;
+  right: 0;
   width: 100%;
   height: 100%;
-  margin-bottom: 0 !important; }
+  background-color: black; }
+
+.location {
+  stroke: green; }
 
 .location:hover {
-  fill: rgba(255, 0, 0, 0.2);
-  stroke: rbga(255, 255, 255, 0.2); }
-
-.location:active {
-  stroke: rgba(255, 0, 0, 0.5);
-  fill: rbga(255, 255, 255, 0.5); }
+  fill: lightgreen; }
 
 .chat-container {
-  position: relative;
+  position: fixed;
+  bottom: 0;
   color: rgba(0, 0, 0, 0.5);
   display: inline-block;
   width: 50%; }
-
-.controls {
-  position: fixed;
-  width: 100%;
-  bottom: 1px;
-  left: 1px; }
-
-.chat-toggle {
-  position: absolute;
-  bottom: 0;
-  letter-spacing: 0.2rem;
-  font-weight: bold; }
 
 .messagebox {
   position: relative;
   min-height: 95px;
   overflow: hidden;
   border-radius: 0 5px 0 0;
-  font-size: 0.8rem; }
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-bottom: 0 !important; }
 
 .messages {
   position: absolute;
   bottom: 0;
-  width: 98.7%;
+  width: 100%;
   height: 100%;
   padding: 0.2rem;
   margin: 0; }
@@ -6717,8 +6685,11 @@ body {
 .messages:hover {
   overflow-y: scroll; }
 
-.messageInput, .messageControls {
+.messageControls {
   width: 100%; }
+
+.messageInput {
+  width: 90.5%; }
 
 .chatMessage {
   display: block;
@@ -6731,8 +6702,9 @@ body {
   margin-bottom: 0; }
 
 .hud {
-  border: 2px solid lightgrey;
-  background-color: rgba(220, 220, 220, 0.5); }
+  border: 2px solid rgba(100, 100, 100, 0.2);
+  background-color: rgba(220, 220, 220, 0.5);
+  margin-left: 2px; }
 
 .hud-tiledata {
   border-radius: 5px 0 5px 5px;
@@ -6745,3 +6717,19 @@ body {
   .hud-tiledata label {
     display: block;
     margin-right: 10px; }
+
+.hud-btn-is-active {
+  background-color: rgba(200, 230, 230, 0.8); }
+
+.controls {
+  position: fixed;
+  height: 100px;
+  bottom: 50%;
+  right: 1px; }
+
+.toggle {
+  margin: 0.05rem;
+  display: block;
+  letter-spacing: 0.1rem;
+  font-weight: bold;
+  width: 4rem; }
