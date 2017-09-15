@@ -70,7 +70,7 @@ defmodule SymiansServerWeb.Channels.System do
       end)
       |> Enum.map(fn {{l, w, h}, loc} ->
           # %{coordinates: %{x: l, y: w, z: h}, location: loc}
-          {Syms.World.Coordinates.to_string({l, w, h}), loc}
+          {Symulator.World.Coordinates.to_string({l, w, h}), loc}
         end)
         |> Map.new
       result = %{locations: mapped_locations, dimensions: %{length: l, width: w, height: h}}

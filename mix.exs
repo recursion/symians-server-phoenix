@@ -45,7 +45,7 @@ defmodule SymiansServer.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:syms, in_umbrella: true},
+      {:symulator, in_umbrella: true},
       {:credo, "~>0.5", only: [:dev, :test]},
       {:dogma, "~> 0.1", only: [:dev]},
       {:uuid, "~> 1.1"}
