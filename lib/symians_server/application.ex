@@ -7,8 +7,8 @@ defmodule SymiansServer.Application do
     import Supervisor.Spec
 
     # create a default world and generate some locations in it
-    world = Symulator.create_world("default")
-    Symulator.World.generate(world, {30, 30, 30})
+    Symulator.create_world("default")
+    |> Symulator.World.generate({100, 100, 100})
 
     # Define workers and child supervisors to be supervised
     children = [
