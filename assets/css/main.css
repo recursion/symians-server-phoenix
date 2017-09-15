@@ -6644,7 +6644,11 @@ body {
   stroke: green; }
 
 .location:hover {
-  fill: lightgreen; }
+  fill: #393; }
+
+.location-selected {
+  fill: #070;
+  stroke: #070; }
 
 .chat-container {
   position: fixed;
@@ -6708,23 +6712,19 @@ body {
 
 .hud-tiledata {
   border-radius: 5px 0 5px 5px;
-  position: fixed;
+  position: absolute;
   top: 1px;
   right: 1px;
-  width: 15%;
-  padding: 3px;
-  float: right; }
-  .hud-tiledata label {
-    display: block;
-    margin-right: 10px; }
+  min-width: 15%;
+  padding: 3px; }
 
 .hud-btn-is-active {
   background-color: rgba(200, 230, 230, 0.8); }
 
 .controls {
-  position: fixed;
-  height: 100px;
-  bottom: 50%;
+  position: absolute;
+  min-height: 100px;
+  bottom: 25%;
   right: 1px; }
 
 .toggle {
@@ -6733,3 +6733,12 @@ body {
   letter-spacing: 0.1rem;
   font-weight: bold;
   width: 4rem; }
+
+.tiledata-label {
+  width: 50%;
+  text-align: right;
+  font-weight: bold; }
+
+.tiledata-value {
+  width: 50%;
+  text-align: center; }
