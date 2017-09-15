@@ -66,7 +66,7 @@ defmodule SymiansServerWeb.Channels.System do
         # only show z level 0 for now
         # in the future we will send out the z level the client is subscribed to
         # as well as the level above and below
-        h == 1
+        h <= 2
       end)
       |> Enum.map(fn {{l, w, h}, loc} ->
           # %{coordinates: %{x: l, y: w, z: h}, location: loc}
