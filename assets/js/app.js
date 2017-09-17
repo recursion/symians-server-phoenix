@@ -21,5 +21,5 @@ import "phoenix_html"
 // import socket from "./socket"
 
 // attach the elm application
-let Elm = require( './main.js' );
-Elm.Main.fullscreen();
+let Elm = require( './elm.js' );
+Elm.Main.fullscreen({images: {loading: 'images/loading.gif'}});
