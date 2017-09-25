@@ -38,15 +38,17 @@ defmodule SymiansServerWeb.Channels.System do
   end
 
   def handle_info(:send_world_data, socket) do
-    # IO.inspect :ets.lookup(String.to_atom("default"), "locations")
-    # IO.inspect :ets.lookup(String.to_atom("default"), "dimensions")
-    # Send initial world data here?
-    [{_, locations}] = :ets.lookup(String.to_atom("default"), "locations")
-    [{_, {l, w, h}}] = :ets.lookup(String.to_atom("default"), "dimensions")
+    case :ets.lookup(String.to_atom("default"), "locations") do
+      [{_, locations}] ->
+        [{_, {l, w, h}}] = :ets.lookup(String.to_atom("default"), "dimensions")
+        send_locations(locations, socket, {l, w, h})
+        {:noreply, socket}
+      _ ->
+        # IO.puts "World not generated yet - delaying world send by 100ms"
+        :timer.send_after(100, :send_world_data)
+        {:noreply, socket}
+    end
 
-    send_locations(locations, socket, {l, w, h})
-
-    {:noreply, socket}
   end
 
   def handle_info(:ping, socket) do
@@ -58,17 +60,17 @@ defmodule SymiansServerWeb.Channels.System do
     IO.inspect :ets.lookup(String.to_atom(world_name), key)
   end
 
-  # send location data to all clients
+  # send location data to client
   def send_locations(locations, socket, {l, w, h}) do
     Task.start(fn ->
-      broadcast! socket, "world",
+      push socket, "world",
           %{locations: (getClientView locations),
             dimensions: %{length: l, width: w, height: h}
            }
     end)
   end
 
-  # TODO: This likely belongs on the symulator module itself
+  # TODO: This may belong on the symulator module itself?
   # generate coordinates within the clients view
   # return the location data for those coordinates
   def getClientView(locations) do
